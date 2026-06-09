@@ -1,0 +1,35 @@
+name: Continuous Automation Bot
+
+# تحديد وقت التشغيل
+on:
+  schedule:
+    # هاد السطر كيعني: شغل السكربت كل 15 دقيقة (تقدر تبدلو)
+    - cron: '*/15 * * * *'
+  
+  # هاد الخيار كيخليك تقدر تشغل السكربت يدوياً بأي وقت بغيتي للتجربة
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. نسخ كود المشروع داخل السيرفر الافتراضي
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    # 2. تثبيت بيئة بايثون على السيرفر
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 3. تثبيت المكتبات (يلا كانت موجودة فملف requirements.txt)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    # 4. تشغيل السكربت ديالك
+    - name: Run Python Script
+      run: python bot.py
